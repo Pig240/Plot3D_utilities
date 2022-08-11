@@ -7,20 +7,20 @@ from .block import Block
 from typing import List
 from enum import Enum
 from math import gcd, sqrt 
-import numpy as np 
+import jax.numpy as jnp
 
 class Direction(Enum):
     i = 0
     j = 1
     k = 2
 
-def max_aspect_ratio(X:np.ndarray,Y:np.ndarray,Z:np.ndarray,ix:int,jx:int,kx:int):
+def max_aspect_ratio(X:jnp.ndarray,Y:jnp.ndarray,Z:jnp.ndarray,ix:int,jx:int,kx:int):
     """Finds the maximum cell aspect ratio
 
     Args:
-        X (np.ndarray): 3 dimensional Array containing X values. X[i,j,k]
-        Y (np.ndarray): 3 dimensional Array containing X values. X[i,j,k]
-        Z (np.ndarray): 3 dimensional Array containing X values. X[i,j,k]
+        X (jnp.ndarray): 3 dimensional Array containing X values. X[i,j,k]
+        Y (jnp.ndarray): 3 dimensional Array containing X values. X[i,j,k]
+        Z (jnp.ndarray): 3 dimensional Array containing X values. X[i,j,k]
 
     Returns:
         float: Maximum value of aspect ratio 
@@ -134,7 +134,7 @@ def split_blocks(blocks:List[Block], ncells_per_block:int,direction:Direction=No
         total_cells = block.IMAX*block.JMAX*block.KMAX
 
         if direction==None: 
-            indx = np.argmin(np.array([block.IMAX,block.JMAX,block.KMAX]))
+            indx = jnp.argmin(jnp.array([block.IMAX,block.JMAX,block.KMAX]))
             if indx == 0:
                 direction_to_use=Direction.i
             elif indx == 1:

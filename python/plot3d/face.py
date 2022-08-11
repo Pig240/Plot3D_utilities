@@ -1,7 +1,6 @@
 import itertools
 from typing import Dict, List, Tuple
-import numpy as np
-from numpy.lib import math
+import jax.numpy as jnp
 from .block import Block
 
 class Face:
@@ -14,12 +13,12 @@ class Face:
             nvertex (int, optional): Number of vertices. Defaults to 4.
             id (int, optional): A unique index indentifying a face
         """
-        self.x = np.zeros(4)
-        self.y = np.zeros(4)
-        self.z = np.zeros(4)        
-        self.I = np.zeros(4,dtype=np.int64)
-        self.J = np.zeros(4,dtype=np.int64)
-        self.K = np.zeros(4,dtype=np.int64)
+        self.x = jnp.zeros(4)
+        self.y = jnp.zeros(4)
+        self.z = jnp.zeros(4)        
+        self.I = jnp.zeros(4,dtype=jnp.int64)
+        self.J = jnp.zeros(4,dtype=jnp.int64)
+        self.K = jnp.zeros(4,dtype=jnp.int64)
         self.cx = 0         # centroid 
         self.cy = 0
         self.cz = 0
@@ -94,9 +93,9 @@ class Face:
             [float]: z value
         """
         
-        indx_i = np.where(self.I == i_val).tolist()
-        indx_j = np.where(self.J == j_val).tolist()
-        indx_k = np.where(self.K == k_val).tolist()
+        indx_i = jnp.where(self.I == i_val).tolist()
+        indx_j = jnp.where(self.J == j_val).tolist()
+        indx_k = jnp.where(self.K == k_val).tolist()
         
         indx_i.extend(indx_j)
         indx_i.extend(indx_k)
@@ -147,11 +146,11 @@ class Face:
             not really used but if anyone wants it. 
         """
         if (self.I[0]!=self.I[1]) and (self.I[0]!=self.I[2]):
-            indx = np.argsort(self.I)
+            indx = jnp.argsort(self.I)
         elif (self.J[0]!=self.J[1]) and (self.J[0]!=self.J[2]):
-            indx = np.argsort(self.J)
+            indx = jnp.argsort(self.J)
         elif (self.K[0]!=self.K[1]) and (self.K[0]!=self.K[2]):
-            indx = np.argsort(self.K)
+            indx = jnp.argsort(self.K)
 
         self.x = self.x[indx]
         self.y = self.y[indx]

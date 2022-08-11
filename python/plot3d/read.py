@@ -1,4 +1,4 @@
-import numpy as np 
+import jax.numpy as jnp
 import os.path as osp
 import struct
 from typing import List
@@ -17,7 +17,7 @@ def __read_plot3D_chunk_binary(f,IMAX:int,JMAX:int,KMAX:int, big_endian:bool=Fal
     Returns:
         numpy.ndarray: Plot3D variable either X,Y, or Z 
     """
-    A = np.empty(shape=(IMAX, JMAX, KMAX))
+    A = jnp.empty(shape=(IMAX, JMAX, KMAX))
     for k in range(KMAX):
         for j in range(JMAX):
             for i in range(IMAX):
@@ -39,7 +39,7 @@ def __read_plot3D_chunk_ASCII(tokenArray:List[str],offset:int,IMAX:int,JMAX:int,
     """
     '''Works for ASCII files 
     '''
-    A = np.empty(shape=(IMAX, JMAX, KMAX))
+    A = jnp.empty(shape=(IMAX, JMAX, KMAX))
     for k in range(KMAX):
         for j in range(JMAX):
             for i in range(IMAX):

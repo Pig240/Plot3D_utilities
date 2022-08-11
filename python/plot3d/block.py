@@ -1,4 +1,4 @@
-import numpy as np 
+import jax.numpy as jnp 
 import math 
 from tqdm import trange
 from typing import List
@@ -6,7 +6,7 @@ from typing import List
 class Block:
     """Plot3D Block definition
     """
-    def __init__(self, X:np.ndarray,Y:np.ndarray,Z:np.ndarray):
+    def __init__(self, X:jnp.ndarray,Y:jnp.ndarray,Z:jnp.ndarray):
         """Initializes the block using all the X,Y,Z coordinates of the block
 
         Args:
@@ -20,15 +20,15 @@ class Block:
         self.Y = Y
         self.Z = Z
         # Centroid 
-        self.cx = np.mean(X) 
-        self.cy = np.mean(Y)
-        self.cz = np.mean(Z)
+        self.cx = jnp.mean(X) 
+        self.cy = jnp.mean(Y)
+        self.cz = jnp.mean(Z)
     
     def cylindrical(self):
         """Converts the block to cylindrical coordinate system. The rotation axis is assumed to be "x" direction
         """
-        self.r = np.sqrt(self.Z*self.Z + self.Y*self.Y)
-        self.theta = np.arctan2(self.Y,self.Z)
+        self.r = jnp.sqrt(self.Z*self.Z + self.Y*self.Y)
+        self.theta = jnp.arctan2(self.Y,self.Z)
 
     def cell_volumes(self):
         """Compute volume of all cells
@@ -42,7 +42,7 @@ class Block:
         X = self.X
         Y = self.Y
         Z = self.Z
-        a = [np.zeros(shape=(self.IMAX,self.JMAX,self.KMAX))  for _ in range(9)]
+        a = [jnp.zeros(shape=(self.IMAX,self.JMAX,self.KMAX))  for _ in range(9)]
         # face csi=const 
         for k in range(1,self.KMAX):
             for j in range(1,self.JMAX):
@@ -103,8 +103,8 @@ class Block:
                     a[7][i,j,k] = ay*0.5
                     a[8][i,j,k] = az*0.5
 
-        cf = np.zeros(shape=(6,3))
-        v = np.zeros(shape=(self.IMAX,self.JMAX,self.KMAX))
+        cf = jnp.zeros(shape=(6,3))
+        v = jnp.zeros(shape=(self.IMAX,self.JMAX,self.KMAX))
         
         for k in trange(1,self.KMAX,desc='Calculating the volumes'):
             for j in range(1,self.JMAX):            
@@ -139,7 +139,7 @@ class Block:
         return v
 
     
-def rotate_block(block,rotation_matrix:np.ndarray) -> Block:
+def rotate_block(block,rotation_matrix:jnp.ndarray) -> BlockJAX:
     """Rotates a block by a rotation matrix 
 
     Args:
@@ -151,7 +151,7 @@ def rotate_block(block,rotation_matrix:np.ndarray) -> Block:
     X = block.X.copy()
     Y = block.Y.copy()
     Z = block.Z.copy()
-    points = np.zeros(shape=(3,block.IMAX*block.JMAX*block.KMAX))
+    points = jnp.zeros(shape=(3,block.IMAX*block.JMAX*block.KMAX))
     indx = 0
     for i in range(block.IMAX):
         for j in range(block.JMAX):
@@ -160,7 +160,7 @@ def rotate_block(block,rotation_matrix:np.ndarray) -> Block:
                 points[1,indx] = block.Y[i,j,k]
                 points[2,indx] = block.Z[i,j,k]
                 indx+=1
-    points_rotated = np.matmul(rotation_matrix,points)
+    points_rotated = jnp.matmul(rotation_matrix,points)
     indx=0
     for i in range(block.IMAX):
         for j in range(block.JMAX):
@@ -170,11 +170,11 @@ def rotate_block(block,rotation_matrix:np.ndarray) -> Block:
                 Z[i,j,k] = points_rotated[2,indx]
                 indx+=1
                 
-    return Block(X,Y,Z)
+    return BlockJAX(X,Y,Z)
                     
 
 
-def reduce_blocks(blocks:List[Block],factor:int):
+def reduce_blocks(blocks:List[BlockJAX],factor:int):
     """reduce the blocks by a factor of (factor)
 
     Args:

@@ -1,5 +1,5 @@
 from os import write
-import numpy as np 
+import jax.numpy as jnp
 import os.path as osp
 import struct
 from typing import List
@@ -18,7 +18,7 @@ def __write_plot3D_block_binary(f,B:Block):
     '''
         https://docs.python.org/3/library/struct.html
     '''
-    def write_var(V:np.ndarray):
+    def write_var(V:jnp.ndarray):
         for k in range(B.KMAX):
             for j in range(B.JMAX):
                 for i in range(B.IMAX):
@@ -36,7 +36,7 @@ def __write_plot3D_block_ASCII(f,B:Block,columns:int=6):
         B (Block): writes a single block to a file
         columns (int, optional): Number of columns in the file. Defaults to 6.
     """
-    def write_var(V:np.ndarray):
+    def write_var(V:jnp.ndarray):
         bNewLine = False
         indx = 0
         for k in range(B.KMAX):

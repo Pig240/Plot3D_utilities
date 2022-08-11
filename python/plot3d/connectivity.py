@@ -4,7 +4,7 @@ from .face import Face, create_face_from_diagonals, split_face
 import math 
 from itertools import product, combinations
 from tqdm import trange
-import numpy as np 
+import jax.numpy as jnp 
 from .differencing import find_face_edges
 import pandas as pd
 from operator import eq 
@@ -170,18 +170,18 @@ def find_matching_blocks(block1:Block,block2:Block,tol:float=1E-6):
         
 
 
-def select_multi_dimensional(T:np.ndarray,dim1:tuple,dim2:tuple, dim3:tuple):
+def select_multi_dimensional(T:jnp.ndarray,dim1:tuple,dim2:tuple, dim3:tuple):
     """Takes a block (T) and selects X,Y,Z from the block given a face's dimensions
         theres really no good way to do this in python 
         
     Args:
-        T (np.ndarray): arbitrary array so say a full matrix containing X
+        T (jnp.ndarray): arbitrary array so say a full matrix containing X
         dim1 (tuple): 20,50 this selects X in the i direction from i=20 to 50
         dim2 (tuple): 40,60 this selects X in the j direction from j=40 to 60
         dim3 (tuple): 10,20 this selects X in the k direction from k=10 to 20
 
     Returns:
-        np.ndarray: returns X or Y or Z given some range of I,J,K
+        jnp.ndarray: returns X or Y or Z given some range of I,J,K
 
     """
     if dim1[0] == dim1[1]:
@@ -562,9 +562,9 @@ def connectivity(blocks:List[Block]):
     for i in range(len(blocks)):
         block_outerfaces = [o for o in outer_faces if o.BlockIndex == i]
         for o in block_outerfaces:
-            IJK = np.array([o.IMIN,o.JMIN,o.KMIN,o.IMAX,o.JMAX,o.KMAX])
+            IJK = jnp.array([o.IMIN,o.JMIN,o.KMIN,o.IMAX,o.JMAX,o.KMAX])
             for o2 in block_outerfaces:
-                IJK2 = np.array([o2.IMIN,o2.JMIN,o2.KMIN,o2.IMAX,o2.JMAX,o2.KMAX])
+                IJK2 = jnp.array([o2.IMIN,o2.JMIN,o2.KMIN,o2.IMAX,o2.JMAX,o2.KMAX])
                 if sum((IJK-IJK2)==0) == 5: # [0,0,0,40,100,0] (outer) [0,0,0,56,100,0] (outer) -> remove the longer face
                     if (o2.diagonal_length>o.diagonal_length):
                         outer_faces_to_remove.append(o2)

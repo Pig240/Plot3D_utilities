@@ -1,7 +1,7 @@
 from operator import truediv
 from typing import List, Dict, Tuple
 from itertools import combinations_with_replacement
-import numpy as np
+import jax.numpy as jnp
 from .block import Block, rotate_block, reduce_blocks
 from .face import Face, create_face_from_diagonals, split_face
 from .connectivity import connectivity_fast, get_face_intersection, face_matches_to_dict
@@ -145,20 +145,20 @@ def create_rotation_matrix(rotation_angle:float, rotation_axis:str="x"):
         rotation_axis (str, optional): Axis of rotation "x", "y", or "z". Defaults to "x".
 
     Returns:
-        np.ndarray: 3x3 rotation matrix 
+        jnp.ndarray: 3x3 rotation matrix 
     """
     
     if rotation_axis=='x':
-        rotation_matrix = np.array([[1,0,0],
+        rotation_matrix = jnp.array([[1,0,0],
                             [0,cos(rotation_angle),-sin(rotation_angle)],
                             [0,sin(rotation_angle),cos(rotation_angle)]])
 
     elif rotation_axis=='y':
-        rotation_matrix = np.array([[cos(rotation_angle),0,sin(rotation_angle)],
+        rotation_matrix = jnp.array([[cos(rotation_angle),0,sin(rotation_angle)],
                             [0,1,0],
                             [-sin(rotation_angle),0,cos(rotation_angle)]])
     elif rotation_axis=='z':
-        rotation_matrix = np.array([[cos(rotation_angle),-sin(rotation_angle), 0],
+        rotation_matrix = jnp.array([[cos(rotation_angle),-sin(rotation_angle), 0],
                             [sin(rotation_angle),cos(rotation_angle), 0],
                             [0, 0, 1]])
 
@@ -580,22 +580,22 @@ def linear_real_transform(face1:Face,face2:Face) -> Tuple:
     cTo3,cTo1 = face1.get_corners() 
     cFrom3,cFrom1 = face2.get_corners()
 
-    dTo  = np.array(cTo3).transpose() - np.array(cTo1).transpose()                      # difference in corner points = diagonal vector for Face 1
-    ldTo=np.sqrt(np.sum(dTo*dTo))
+    dTo  = jnp.array(cTo3).transpose() - jnp.array(cTo1).transpose()                      # difference in corner points = diagonal vector for Face 1
+    ldTo=jnp.sqrt(jnp.sum(dTo*dTo))
     if ldTo > 0:
         dTo=dTo/ldTo
     
-    dFrom = np.array(cFrom3).transpose() - np.array(cFrom1).transpose()                 # difference in corner points = diagonal vector for Face 2
-    ldFrom = np.sqrt(np.sum(dFrom*dFrom))
+    dFrom = jnp.array(cFrom3).transpose() - jnp.array(cFrom1).transpose()                 # difference in corner points = diagonal vector for Face 2
+    ldFrom = jnp.sqrt(jnp.sum(dFrom*dFrom))
     if( ldFrom > 0 ):
         dFrom=dFrom/ldFrom
     
-    dotprod = np.sum(dTo * dFrom)
+    dotprod = jnp.sum(dTo * dFrom)
     
     if( abs(dotprod-1) < 1E-10 ): # Case of no rotation
         ang = 0
 
-        rotation_matrix  = np.zeros(shape=(3,3))
+        rotation_matrix  = jnp.zeros(shape=(3,3))
     else:
         #Compute the angle of rotation  
         cosAng=(dTo[1]*dFrom[1]+dTo[2]*dFrom[2])/sqrt(dTo[1]*dTo[1]+dTo[2]*dTo[2])/sqrt(dFrom[1]*dFrom[1]+dFrom[2]*dFrom[2])

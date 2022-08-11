@@ -1,18 +1,18 @@
 '''
     This code computes all the edges of a block or block face 
 '''
-import numpy as np 
+import jax.numpy as jnp 
 import pandas as pd 
 
-def find_face_edges(X:np.ndarray,Y:np.ndarray,Z:np.ndarray):
+def find_face_edges(X:jnp.ndarray,Y:jnp.ndarray,Z:jnp.ndarray):
     """Check if the edges of both faces to see if they are parallel. Face can be in any direction (I,J) (I,K) etc.
         if edges are parallel then their vertices might intersect
         Find edges will always deal with faces and not something that is in 3D
 
     Args:
-        X (np.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of X for the block domain
-        Y (np.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of Y for the block domain
-        Z (np.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of Z for the block domain
+        X (jnp.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of X for the block domain
+        Y (jnp.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of Y for the block domain
+        Z (jnp.ndarray): Multi-dimensional array (2 dimensions PMAX,QMAX ) representing values of Z for the block domain
 
     Returns:
         pandas.DataFrame: with columns p,q,dp,dq where dp, dq are each tuples containing (dx_b,dy_b,dz_b),(dx_f,dy_f,dz_f)
@@ -51,14 +51,14 @@ def find_face_edges(X:np.ndarray,Y:np.ndarray,Z:np.ndarray):
     df = pd.DataFrame(data = diffArray)
     return df 
 
-def find_edges(X:np.ndarray,Y:np.ndarray,Z:np.ndarray):
+def find_edges(X:jnp.ndarray,Y:jnp.ndarray,Z:jnp.ndarray):
     """Check if the edges of both blocks that are parallel. Takes into account the whole block and not a single face
         if edges are parallel then their vertices might intersect. 
 
     Args:
-        X (np.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of X for the block/face domain
-        Y (np.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of Y for the block/face domain
-        Z (np.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of Z for the block/face domain
+        X (jnp.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of X for the block/face domain
+        Y (jnp.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of Y for the block/face domain
+        Z (jnp.ndarray): Multi-dimensional array (3 dimensions IMAX,JMAX,KMAX ) representing values of Z for the block/face domain
 
     Returns:
         pandas.DataFrame: Dataframe with columns i,j,k,di,dj,dk where di,dj,dk are each tuples containing (dx_b,dy_b,dz_b),(dx_f,dy_f,dz_f)
