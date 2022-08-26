@@ -52,6 +52,8 @@ def __read_plot3D_chunk_ASCII(tokenArray:List[str],offset:int,IMAX:int,JMAX:int,
 def read_ap_nasa(filename:str):
     """Reads an AP NASA File and converts it to Block format which can be exported to a plot3d file
         AP NASA file represents a single block. The first 7 integers are il,jl,kl,ile,ite,jtip,nbld
+
+    Code taken from Dr. Mark Celestina (NASA)
     
     Args:
         filename (str): location of the .ap file
